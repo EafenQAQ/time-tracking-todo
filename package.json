@@ -1,7 +1,8 @@
 {
   "name": "time-tracking-todo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A Todo List app with time tracking features",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "electron": "^35.1.5",
     "vue": "^3.5.13"
   },
   "devDependencies": {
