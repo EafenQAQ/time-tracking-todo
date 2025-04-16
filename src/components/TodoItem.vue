@@ -6,9 +6,7 @@
         </div>
 
         <div class="todo-actions">
-            <div class="timer-display">
-                {{ formatTime(todo.totalTime + (todo.isTracking ? Date.now() - todo.startTime : 0)) }}
-            </div>
+            <timer :is-active="todo.isTracking" :start-time="todo.startTime" :total-time="todo.totalTime" />
 
             <button @click="$emit('toggle-timer', todo.id)" :class="['timer-btn', { 'timer-running': todo.isTracking }]"
                 :disabled="todo.completed">
@@ -17,6 +15,10 @@
 
             <button class="delete-btn" @click="$emit('delete-todo', todo.id)">
                 删除
+            </button>
+
+            <button class="details-btn" @click="showDetails = !showDetails">
+                {{ showDetails ? '隐藏详情' : '查看详情' }}
             </button>
         </div>
     </div>
@@ -38,6 +40,7 @@
 
 <script setup>
 import { defineProps, defineEmits, ref } from 'vue'
+import Timer from './Timer.vue'
 
 const props = defineProps({
     todo: {
@@ -98,6 +101,7 @@ const formatDateTime = (date) => {
 .todo-content {
     display: flex;
     align-items: center;
+    flex: 1;
 }
 
 .todo-text {
@@ -113,14 +117,7 @@ const formatDateTime = (date) => {
 .todo-actions {
     display: flex;
     align-items: center;
-}
-
-.timer-display {
-    font-family: monospace;
-    font-size: 16px;
-    margin-right: 10px;
-    min-width: 80px;
-    text-align: right;
+    gap: 10px;
 }
 
 .timer-btn {
@@ -130,7 +127,6 @@ const formatDateTime = (date) => {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 10px;
 }
 
 .timer-btn:disabled {
@@ -145,6 +141,15 @@ const formatDateTime = (date) => {
 .delete-btn {
     padding: 8px 12px;
     background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.details-btn {
+    padding: 8px 12px;
+    background-color: #9e9e9e;
     color: white;
     border: none;
     border-radius: 4px;
