@@ -5,24 +5,52 @@
             <button @click="addTodo">添加</button>
         </div>
 
-        <div v-if="todos.length === 0" class="empty-state">
-            还没有任务，添加一个吧！
+        <task-stats :todos="todos" />
+
+        <div class="todo-filters">
+            <button @click="filter = 'all'" :class="{ active: filter === 'all' }">
+                全部
+            </button>
+            <button @click="filter = 'active'" :class="{ active: filter === 'active' }">
+                进行中
+            </button>
+            <button @click="filter = 'completed'" :class="{ active: filter === 'completed' }">
+                已完成
+            </button>
+        </div>
+
+        <div v-if="filteredTodos.length === 0" class="empty-state">
+            暂无任务显示
         </div>
 
         <div v-else class="todos">
-            <todo-item v-for="todo in todos" :key="todo.id" :todo="todo" @toggle-complete="toggleComplete"
+            <todo-item v-for="todo in filteredTodos" :key="todo.id" :todo="todo" @toggle-complete="toggleComplete"
                 @toggle-timer="toggleTimer" @delete-todo="deleteTodo" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import TodoItem from './TodoItem.vue'
+import TaskStats from './TaskStats.vue'
 
 // 任务列表状态
 const todos = ref([])
 const newTodo = ref('')
+const filter = ref('all') // 过滤器：'all', 'active', 'completed'
+
+// 过滤后的任务列表
+const filteredTodos = computed(() => {
+    switch (filter.value) {
+        case 'active':
+            return todos.value.filter(todo => !todo.completed)
+        case 'completed':
+            return todos.value.filter(todo => todo.completed)
+        default:
+            return todos.value
+    }
+})
 
 // 从localStorage加载数据
 onMounted(() => {
@@ -130,6 +158,33 @@ const deleteTodo = (id) => {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.todo-filters {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.todo-filters button {
+    flex: 1;
+    padding: 8px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.todo-filters button:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.todo-filters button:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.todo-filters button.active {
+    background-color: #2196F3;
+    color: white;
+    border-color: #2196F3;
 }
 
 .empty-state {
