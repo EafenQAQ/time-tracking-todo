@@ -3,10 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "description": "A Todo List app with time tracking features",
+  "main": "electron/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "electron:dev": "concurrently \"npm run dev\" \"electron .\"",
+    "electron:build": "npm run build && electron-builder",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,5 +19,27 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.2",
     "vite": "^6.3.0"
+  },
+  "build": {
+    "appId": "com.example.time-tracking-todo",
+    "productName": "时间追踪 Todo List",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "electron/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "时间追踪 Todo"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ]
   }
 }
